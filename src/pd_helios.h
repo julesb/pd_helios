@@ -13,6 +13,7 @@
 #define DEFAULT_SUBDIVIDE 15
 #define DEFAULT_BLANK_NUM 8
 #define DEFAULT_MAX_ANGLE 15.0f
+#define DEFAULT_DRAW_MODE 0
 
 #include "sdk/HeliosDac.h"
 
@@ -71,7 +72,7 @@ class Helios
 {
 public:
     
-    Helios(int _pps=20000,int _intensity=255,int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE,bool _enabled=false)
+    Helios(int _pps=20000,int _intensity=255,int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _draw_mode=DEFAULT_DRAW_MODE, bool _enabled=false)
     {
         std::cout << "Helios v "<<HELIOS_VERSION;
 
@@ -96,6 +97,7 @@ public:
         subdivide=_subdivide;
         blank_num=_blank_num;
         max_angle=_max_angle;
+        draw_mode=_draw_mode;
         enabled=_enabled;
         output_centre=point(0x800,0x800);
     }
@@ -136,6 +138,12 @@ public:
             //std::cout << "Helios v "<<HELIOS_VERSION<<": set blank_num to "<<blank_num<<std::endl;
         }
     }
+    void set_drawmode(int i){
+        if (i == 0 || i == 1) {
+            draw_mode = i;
+            std::cout << "Helios v "<<HELIOS_VERSION<<": set draw_mode to "<<draw_mode<<std::endl;
+        }
+    }
     void set_maxangle(float f){
         if (f>=0.0f&&f<90.0f&&f!=max_angle){
             max_angle=f;
@@ -154,12 +162,19 @@ public:
         	
         }
     }
+    int get_drawmode() {
+        return draw_mode;
+    }
+
     int get_pts(){
         return pps;
     }
 
     //draw a new set of points
     int draw(std::vector <point> &points);
+
+    //draw a new set of points, without dwell, subdivision etc.
+    int draw_raw();
 
     //repeat previous drawing (intensity is re-calculated)
     int draw();
@@ -175,6 +190,7 @@ public:
 
         int subdivide,blank_num;
         float max_angle;
+        int draw_mode;
 
         point output_centre;
 

@@ -63,7 +63,13 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
 }
 
 static void redraw(t_helios *x){
-  int num_drawn = x->helios->draw();
+  int num_drawn = 0;
+  if (x->helios->get_drawmode() == 0) {
+    num_drawn = x->helios->draw();
+  }
+  else {
+    num_drawn = x->helios->draw_raw();
+  }
   outlet_float(x->f_out, (float)num_drawn);
 }
 
@@ -92,6 +98,14 @@ void blanknum_set(t_helios *x, t_floatarg f)
 {
   int blanknum=min(255,max(0,(int)f));
   x->helios->set_blanknum(blanknum);
+  redraw(x);
+}
+
+void drawmode_set(t_helios *x, t_floatarg f)
+{
+  int drawmode=min(1,max(0,(int)f));
+  x->helios->set_drawmode(drawmode);
+  post("drawmode: %d", drawmode);
   redraw(x);
 }
 
@@ -161,6 +175,9 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)blanknum_set, gensym("blanknum"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)drawmode_set, gensym("drawmode"), A_DEFFLOAT, 0);
 
   /* set the name of the help-patch to "help-helios"(.pd) */
   class_sethelpsymbol(helios_class, gensym("help-helios"));

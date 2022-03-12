@@ -38,8 +38,46 @@ static float getLineDegreesAtIndex(vector <point> &line,int i){
 
 int Helios::draw(std::vector <point> &points){
 	line=points;
-	return draw();
+    return (draw_mode==0)? draw() : draw_raw();
 }
+
+int Helios::draw_raw(){
+
+    int xoffs=output_centre.x;
+    int yoffs=output_centre.y;
+
+    vector <HeliosPoint> points;
+    int i;
+    for (i=0;i<line.size();i++){
+        points.push_back(HeliosPoint{
+                (uint16_t)(line[i].x+xoffs),
+                (uint16_t)(line[i].y+yoffs),
+                (uint8_t)(line[i].r*intensity/255.0),
+                (uint8_t)(line[i].g*intensity/255.0),
+                (uint8_t)(line[i].b*intensity/255.0),
+                (uint8_t)255}
+                );
+    }
+
+    for (auto& p:points){ //avoid problems with excessive scale
+        p.x=min((uint16_t)0xfff,p.x);
+        p.y=min((uint16_t)0xfff,p.y);
+    }
+
+	if (device!=HELIOS_NODEVICE){
+        if (enabled){
+            while (!dac.GetStatus(device)); //timeout for this?
+	        int ret=dac.WriteFrame(device, pps, HELIOS_FLAGS_DEFAULT, &points[0], min(HELIOS_MAX_POINTS,(int)points.size()));
+	        if (ret==HELIOS_SUCCESS){
+                return points.size();
+	        }
+	        return ret;
+	    }
+	}
+
+	return -2;
+}
+
 
 int Helios::draw(){
 
