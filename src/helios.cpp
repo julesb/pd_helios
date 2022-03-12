@@ -109,6 +109,14 @@ void drawmode_set(t_helios *x, t_floatarg f)
   redraw(x);
 }
 
+void maxstatuspoll_set(t_helios *x, t_floatarg f)
+{
+  int maxpoll=max(0,(int)f);
+  x->helios->set_maxstatuspoll(maxpoll);
+  post("maxstatuspoll: %d", maxpoll);
+  redraw(x);
+}
+
 void helios_free(t_helios *x)
 {
   delete x->helios;
@@ -178,6 +186,9 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)drawmode_set, gensym("drawmode"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)maxstatuspoll_set, gensym("maxstatuspoll"), A_DEFFLOAT, 0);
 
   /* set the name of the help-patch to "help-helios"(.pd) */
   class_sethelpsymbol(helios_class, gensym("help-helios"));

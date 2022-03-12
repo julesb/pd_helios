@@ -45,6 +45,7 @@ int Helios::draw_raw(){
 
     int xoffs=output_centre.x;
     int yoffs=output_centre.y;
+    int pollcount;
 
     vector <HeliosPoint> points;
     int i;
@@ -66,7 +67,12 @@ int Helios::draw_raw(){
 
 	if (device!=HELIOS_NODEVICE){
         if (enabled){
-            while (!dac.GetStatus(device)); //timeout for this?
+            pollcount = 0;
+            for (pollcount=0; pollcount < max_status_poll; pollcount++) {
+                if (dac.GetStatus(device) == 1) {
+                    break;
+                }
+            }
 	        int ret=dac.WriteFrame(device, pps, HELIOS_FLAGS_DEFAULT, &points[0], min(HELIOS_MAX_POINTS,(int)points.size()));
 	        if (ret==HELIOS_SUCCESS){
                 return points.size();
@@ -83,7 +89,7 @@ int Helios::draw(){
 
     int xoffs=output_centre.x;
     int yoffs=output_centre.y;
-
+    int pollcount;
     //save data
     vector <HeliosPoint> points;
 
@@ -156,7 +162,12 @@ int Helios::draw(){
 
 	if (device!=HELIOS_NODEVICE){
     	if (enabled){
-    		while (!dac.GetStatus(device)); //timeout for this?
+            pollcount = 0;
+            for (pollcount=0; pollcount < max_status_poll; pollcount++) {
+                if (dac.GetStatus(device) == 1) {
+                    break;
+                }
+            }
 	        int ret=dac.WriteFrame(device, pps, HELIOS_FLAGS_DEFAULT, &points[0], min(HELIOS_MAX_POINTS,(int)points.size()));
 	        if (ret==HELIOS_SUCCESS){
 	        	return points.size();
