@@ -73,7 +73,7 @@ class Helios
 {
 public:
     
-    Helios(int _pps=20000,int _intensity=255,int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _draw_mode=DEFAULT_DRAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, bool _enabled=false)
+    Helios(int _pps=20000,int _intensity=255,int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _draw_mode=DEFAULT_DRAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, bool _enabled=false)
     {
         std::cout << "Helios v "<<HELIOS_VERSION;
 
@@ -99,7 +99,11 @@ public:
         blank_num=_blank_num;
         max_angle=_max_angle;
         draw_mode=_draw_mode;
+        start_immediately = _start_immediately;
+        single_mode=_single_mode;
+        dont_block=_dont_block;
         max_status_poll = _max_status_poll;
+
         enabled=_enabled;
         output_centre=point(0x800,0x800);
     }
@@ -152,6 +156,27 @@ public:
             std::cout << "Helios v "<<HELIOS_VERSION<<": set max_status_poll to "<<max_status_poll<<std::endl;
         }
     }
+    void set_startimmediately(int i){
+        if (i == 0 || i == 1) {
+            start_immediately = i;
+            std::cout << "Helios v "<<HELIOS_VERSION<<": set start_immediately to "<<start_immediately<<std::endl;
+        }
+    }
+    void set_singlemode(int i){
+        if (i == 0 || i == 1) {
+            single_mode = i;
+            std::cout << "Helios v "<<HELIOS_VERSION<<": set single_mode to "<<single_mode<<std::endl;
+        }
+    }
+    void set_dontblock(int i){
+        if (i == 0 || i == 1) {
+            dont_block = i;
+            std::cout << "Helios v "<<HELIOS_VERSION<<": set dont_block to "<<dont_block<<std::endl;
+        }
+    }
+
+
+
     void set_maxangle(float f){
         if (f>=0.0f&&f<90.0f&&f!=max_angle){
             max_angle=f;
@@ -200,6 +225,9 @@ public:
         float max_angle;
         int draw_mode;
         int max_status_poll;
+        int start_immediately;
+        int single_mode;
+        int dont_block;
 
         point output_centre;
 

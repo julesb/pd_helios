@@ -48,6 +48,10 @@ int Helios::draw_raw(){
     int pollcount;
 
     vector <HeliosPoint> points;
+
+    int flags = (start_immediately * HELIOS_FLAGS_START_IMMEDIATELY)
+              | (single_mode * HELIOS_FLAGS_SINGLE_MODE)
+              | (dont_block * HELIOS_FLAGS_DONT_BLOCK);
     int i;
     for (i=0;i<line.size();i++){
         points.push_back(HeliosPoint{
@@ -73,7 +77,7 @@ int Helios::draw_raw(){
                     break;
                 }
             }
-	        int ret=dac.WriteFrame(device, pps, HELIOS_FLAGS_DEFAULT, &points[0], min(HELIOS_MAX_POINTS,(int)points.size()));
+	        int ret=dac.WriteFrame(device, pps, flags, &points[0], min(HELIOS_MAX_POINTS,(int)points.size()));
 	        if (ret==HELIOS_SUCCESS){
                 return points.size();
 	        }
@@ -93,6 +97,9 @@ int Helios::draw(){
     //save data
     vector <HeliosPoint> points;
 
+    int flags = (start_immediately * HELIOS_FLAGS_START_IMMEDIATELY)
+              | (single_mode * HELIOS_FLAGS_SINGLE_MODE)
+              | (dont_block * HELIOS_FLAGS_DONT_BLOCK);
     //insert blank points to get laser to shape starting point
     for (int l=0;l<blank_num;l++){
         points.push_back(HeliosPoint{
@@ -168,7 +175,7 @@ int Helios::draw(){
                     break;
                 }
             }
-	        int ret=dac.WriteFrame(device, pps, HELIOS_FLAGS_DEFAULT, &points[0], min(HELIOS_MAX_POINTS,(int)points.size()));
+	        int ret=dac.WriteFrame(device, pps, flags, &points[0], min(HELIOS_MAX_POINTS,(int)points.size()));
 	        if (ret==HELIOS_SUCCESS){
 	        	return points.size();
 	        }

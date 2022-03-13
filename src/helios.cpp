@@ -117,6 +117,30 @@ void maxstatuspoll_set(t_helios *x, t_floatarg f)
   redraw(x);
 }
 
+void startimmediately_set(t_helios *x, t_floatarg f)
+{
+    int startimmediately = min(1, max(0, (int)f));
+    x->helios->set_startimmediately(startimmediately);
+    post("startimmediately: %d", startimmediately);
+    redraw(x);
+}
+void singlemode_set(t_helios *x, t_floatarg f)
+{
+    int singlemode = min(1, max(0, (int)f));
+    x->helios->set_singlemode(singlemode);
+    post("singlemode: %d", singlemode);
+    redraw(x);
+}
+void dontblock_set(t_helios *x, t_floatarg f)
+{
+    int dontblock = min(1, max(0, (int)f));
+    x->helios->set_dontblock(dontblock);
+    post("dontblock: %d", dontblock);
+    redraw(x);
+}
+
+
+
 void helios_free(t_helios *x)
 {
   delete x->helios;
@@ -189,6 +213,15 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)maxstatuspoll_set, gensym("maxstatuspoll"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)startimmediately_set, gensym("startimmediately"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)singlemode_set, gensym("singlemode"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)dontblock_set, gensym("dontblock"), A_DEFFLOAT, 0);
 
   /* set the name of the help-patch to "help-helios"(.pd) */
   class_sethelpsymbol(helios_class, gensym("help-helios"));
