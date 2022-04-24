@@ -175,6 +175,10 @@ int Helios::draw(){
                     break;
                 }
             }
+            if (points.size() > 4096) {
+                cout << "Too many points: " << points.size() << endl;
+                return HELIOS_ERROR_TOO_MANY_POINTS;
+            }
 	        int ret=dac.WriteFrame(device, pps, flags, &points[0], min(HELIOS_MAX_POINTS,(int)points.size()));
 	        if (ret==HELIOS_SUCCESS){
 	        	return points.size();

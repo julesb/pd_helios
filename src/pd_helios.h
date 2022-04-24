@@ -120,10 +120,10 @@ public:
             //std::cout << "Helios v "<<HELIOS_VERSION<<": set output centre to "<<output_centre.x<<","<<output_centre.y<<std::endl;
         }
     }
-    void set_pts(int n){
-        if (n!=pps){
+    void set_pps(int n){
+        if (n!=pps && n >= 10000 && n <= 0xffff){
             pps=n;
-            //std::cout << "Helios v "<<HELIOS_VERSION<<": set point output to "<<pps<<std::endl;
+            //std::cout << "Helios v "<<HELIOS_VERSION<<": set PPS to "<<pps<<std::endl;
         }
     }
     void set_intensity(int i){

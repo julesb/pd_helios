@@ -138,6 +138,13 @@ void dontblock_set(t_helios *x, t_floatarg f)
     post("dontblock: %d", dontblock);
     redraw(x);
 }
+void pps_set(t_helios *x, t_floatarg f)
+{
+  int newpps=min(0xffff, max(10000,(int)f));
+  x->helios->set_pps(newpps);
+  post("pps: %d", newpps);
+  //redraw(x);
+}
 
 
 
@@ -195,6 +202,9 @@ void helios_setup(void) {
   class_addbang(helios_class, helios_bang); 
 
   class_addlist(helios_class, helios_list);
+
+  class_addmethod(helios_class,
+        (t_method)pps_set, gensym("pps"), A_DEFFLOAT, 0);
 
   class_addmethod(helios_class,
         (t_method)intensity_set, gensym("intensity"), A_DEFFLOAT, 0);
