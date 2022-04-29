@@ -38,7 +38,7 @@ static float getLineDegreesAtIndex(vector <point> &line,int i){
 
 int Helios::draw(std::vector <point> &points){
 	line=points;
-    return (draw_mode==0)? draw() : draw_raw();
+    return (raw_mode==0)? draw() : draw_raw();
 }
 
 int Helios::draw_raw(){

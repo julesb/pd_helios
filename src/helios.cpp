@@ -64,7 +64,7 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
 
 static void redraw(t_helios *x){
   int num_drawn = 0;
-  if (x->helios->get_drawmode() == 0) {
+  if (x->helios->get_rawmode() == 0) {
     num_drawn = x->helios->draw();
   }
   else {
@@ -101,11 +101,11 @@ void blanknum_set(t_helios *x, t_floatarg f)
   redraw(x);
 }
 
-void drawmode_set(t_helios *x, t_floatarg f)
+void rawmode_set(t_helios *x, t_floatarg f)
 {
-  int drawmode=min(1,max(0,(int)f));
-  x->helios->set_drawmode(drawmode);
-  post("drawmode: %d", drawmode);
+  int rawmode=min(1,max(0,(int)f));
+  x->helios->set_rawmode(rawmode);
+  post("rawmode: %d", rawmode);
   redraw(x);
 }
 
@@ -219,7 +219,7 @@ void helios_setup(void) {
         (t_method)blanknum_set, gensym("blanknum"), A_DEFFLOAT, 0);
 
   class_addmethod(helios_class,
-        (t_method)drawmode_set, gensym("drawmode"), A_DEFFLOAT, 0);
+        (t_method)rawmode_set, gensym("rawmode"), A_DEFFLOAT, 0);
 
   class_addmethod(helios_class,
         (t_method)maxstatuspoll_set, gensym("maxstatuspoll"), A_DEFFLOAT, 0);

@@ -13,7 +13,7 @@
 #define DEFAULT_SUBDIVIDE 15
 #define DEFAULT_BLANK_NUM 8
 #define DEFAULT_MAX_ANGLE 15.0f
-#define DEFAULT_DRAW_MODE 0
+#define DEFAULT_RAW_MODE 0
 #define DEFAULT_MAX_STATUS_POLL 512
 
 #include "sdk/HeliosDac.h"
@@ -73,7 +73,7 @@ class Helios
 {
 public:
     
-    Helios(int _pps=20000,int _intensity=255,int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _draw_mode=DEFAULT_DRAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, bool _enabled=false)
+    Helios(int _pps=20000,int _intensity=255,int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _raw_mode=DEFAULT_RAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, bool _enabled=false)
     {
         std::cout << "Helios v "<<HELIOS_VERSION;
 
@@ -91,14 +91,15 @@ public:
         }
         else {
             device=_device;
-            pps=_pps;
+            //pps=_pps;
             dac.SetShutter(device,false);
         }
+        pps=_pps;
         intensity=_intensity;
         subdivide=_subdivide;
         blank_num=_blank_num;
         max_angle=_max_angle;
-        draw_mode=_draw_mode;
+        raw_mode=_raw_mode;
         start_immediately = _start_immediately;
         single_mode=_single_mode;
         dont_block=_dont_block;
@@ -121,7 +122,7 @@ public:
         }
     }
     void set_pps(int n){
-        if (n!=pps && n >= 10000 && n <= 0xffff){
+        if (n!=pps && n >= 1000 && n <= 0xffff){
             pps=n;
             //std::cout << "Helios v "<<HELIOS_VERSION<<": set PPS to "<<pps<<std::endl;
         }
@@ -144,10 +145,10 @@ public:
             //std::cout << "Helios v "<<HELIOS_VERSION<<": set blank_num to "<<blank_num<<std::endl;
         }
     }
-    void set_drawmode(int i){
+    void set_rawmode(int i){
         if (i == 0 || i == 1) {
-            draw_mode = i;
-            std::cout << "Helios v "<<HELIOS_VERSION<<": set draw_mode to "<<draw_mode<<std::endl;
+            raw_mode = i;
+            std::cout << "Helios v "<<HELIOS_VERSION<<": set raw_mode to "<<raw_mode<<std::endl;
         }
     }
     void set_maxstatuspoll(int i){
@@ -195,8 +196,8 @@ public:
         	
         }
     }
-    int get_drawmode() {
-        return draw_mode;
+    int get_rawmode() {
+        return raw_mode;
     }
 
     int get_pts(){
@@ -223,11 +224,12 @@ public:
 
         int subdivide,blank_num;
         float max_angle;
-        int draw_mode;
+        int raw_mode;
         int max_status_poll;
         int start_immediately;
         int single_mode;
         int dont_block;
+        int debug;
 
         point output_centre;
 
