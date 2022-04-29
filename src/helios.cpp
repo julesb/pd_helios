@@ -146,6 +146,21 @@ void pps_set(t_helios *x, t_floatarg f)
   //redraw(x);
 }
 
+void flipx_set(t_helios *x, t_floatarg f)
+{
+    int flipx = min(1, max(0, (int)f));
+    x->helios->set_flip_x(flipx);
+    post("flipx: %d", flipx);
+    redraw(x);
+}
+
+void flipy_set(t_helios *x, t_floatarg f)
+{
+    int flipy = min(1, max(0, (int)f));
+    x->helios->set_flip_y(flipy);
+    post("flipy: %d", flipy);
+    redraw(x);
+}
 
 
 void helios_free(t_helios *x)
@@ -232,7 +247,12 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)dontblock_set, gensym("dontblock"), A_DEFFLOAT, 0);
+  
+  class_addmethod(helios_class,
+        (t_method)flipx_set, gensym("flipx"), A_DEFFLOAT, 0);
 
+  class_addmethod(helios_class,
+        (t_method)flipy_set, gensym("flipy"), A_DEFFLOAT, 0);
   /* set the name of the help-patch to "help-helios"(.pd) */
   class_sethelpsymbol(helios_class, gensym("help-helios"));
 

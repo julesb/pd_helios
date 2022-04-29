@@ -73,7 +73,7 @@ class Helios
 {
 public:
     
-    Helios(int _pps=20000,int _intensity=255,int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _raw_mode=DEFAULT_RAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, bool _enabled=false)
+    Helios(int _pps=20000,int _intensity=255,int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _raw_mode=DEFAULT_RAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, int _flipx=0, int _flipy=0, bool _enabled=false)
     {
         std::cout << "Helios v "<<HELIOS_VERSION;
 
@@ -104,6 +104,8 @@ public:
         single_mode=_single_mode;
         dont_block=_dont_block;
         max_status_poll = _max_status_poll;
+        flip_x = _flipx;
+        flip_y = _flipy;
 
         enabled=_enabled;
         output_centre=point(0x800,0x800);
@@ -176,6 +178,18 @@ public:
         }
     }
 
+    void set_flip_x(int i){
+        if (i == 0 || i == 1) {
+            flip_x = i;
+            std::cout << "Helios v "<<HELIOS_VERSION<<": set flip_x to "<<flip_x<<std::endl;
+        }
+    }
+    void set_flip_y(int i){
+        if (i == 0 || i == 1) {
+            flip_y = i;
+            std::cout << "Helios v "<<HELIOS_VERSION<<": set flip_y to "<<flip_y<<std::endl;
+        }
+    }
 
 
     void set_maxangle(float f){
@@ -229,6 +243,9 @@ public:
         int start_immediately;
         int single_mode;
         int dont_block;
+        int flip_x;
+        int flip_y;
+
         int debug;
 
         point output_centre;
