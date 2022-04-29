@@ -108,7 +108,7 @@ public:
         flip_y = _flipy;
 
         enabled=_enabled;
-        output_centre=point(0x800,0x800);
+        output_centre=point(0x800,0x800); // 2048
     }
     
     ~Helios()
@@ -216,6 +216,13 @@ public:
 
     int get_pts(){
         return pps;
+    }
+
+    int get_flip_x() {
+        return flip_x;
+    }
+    int get_flip_y() {
+        return flip_y;
     }
 
     //draw a new set of points

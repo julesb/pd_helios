@@ -63,18 +63,6 @@ int Helios::draw_raw(){
                 (uint8_t)255}
                 );
     }
-
-    if (flip_x) {
-        for (auto& p:points) {
-            p.x = p.x * -1;
-        }
-    }
-    if (flip_y) {
-        for (auto& p:points) {
-            p.y = p.y * -1;
-        }
-    }
-    
     for (auto& p:points){ //avoid problems with excessive scale
         p.x=min((uint16_t)0xfff,p.x);
         p.y=min((uint16_t)0xfff,p.y);
@@ -171,17 +159,6 @@ int Helios::draw(){
 	        }
 	        //cout << "segment "<<i<<" - "<<dist<<" length, inserted "<<inserted<<" points"<<endl;
 	    }
-    }
-
-    if (flip_x) {
-        for (auto& p:points) {
-            p.x = p.x * -1;
-        }
-    }
-    if (flip_y) {
-        for (auto& p:points) {
-            p.y = p.y * -1;
-        }
     }
 
     for (auto& p:points){ //avoid problems with excessive scale

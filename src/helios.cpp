@@ -57,6 +57,12 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
 
     }
 
+    int flip_x = x->helios->get_flip_x();
+    int flip_y = x->helios->get_flip_y();
+
+    if (flip_x) for (auto& p:points) p.x = p.x * -1;
+    if (flip_y) for (auto& p:points) p.y = p.y * -1;
+
     int num_drawn = x->helios->draw(points);
 
     outlet_float(x->f_out, (float)num_drawn);
