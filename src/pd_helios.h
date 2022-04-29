@@ -124,7 +124,7 @@ public:
         }
     }
     void set_pps(int n){
-        if (n!=pps && n >= 1000 && n <= 0xffff){
+        if (n!=pps && n >= 10 && n <= 0xffff){
             pps=n;
             //std::cout << "Helios v "<<HELIOS_VERSION<<": set PPS to "<<pps<<std::endl;
         }

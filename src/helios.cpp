@@ -140,7 +140,7 @@ void dontblock_set(t_helios *x, t_floatarg f)
 }
 void pps_set(t_helios *x, t_floatarg f)
 {
-  int newpps=min(0xffff, max(10000,(int)f));
+  int newpps=min(0xffff, max(10,(int)f));
   x->helios->set_pps(newpps);
   post("pps: %d", newpps);
   //redraw(x);
