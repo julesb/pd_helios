@@ -45,11 +45,11 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
   }
 
     std::vector <point> points;
-
+    float scale = x->helios->get_scale();
     for (int i=0;i<argc/5;i++){
       points.push_back(point{
-        atom_getfloat(&argv[i*5]),
-        atom_getfloat(&argv[i*5+1]),
+        atom_getfloat(&argv[i*5]) * scale,
+        atom_getfloat(&argv[i*5+1]) * scale,
         (uint8_t)atom_getfloat(&argv[i*5+2]),
         (uint8_t)atom_getfloat(&argv[i*5+3]),
         (uint8_t)atom_getfloat(&argv[i*5+4])
@@ -168,6 +168,13 @@ void flipy_set(t_helios *x, t_floatarg f)
     redraw(x);
 }
 
+void scale_set(t_helios *x, t_floatarg f)
+{
+    float scale = f;
+    x->helios->set_scale(scale);
+    //post("scale: %f", scale);
+    redraw(x);
+}
 
 void helios_free(t_helios *x)
 {
@@ -259,6 +266,9 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)flipy_set, gensym("flipy"), A_DEFFLOAT, 0);
+  
+  class_addmethod(helios_class,
+        (t_method)scale_set, gensym("scale"), A_DEFFLOAT, 0);
   /* set the name of the help-patch to "help-helios"(.pd) */
   class_sethelpsymbol(helios_class, gensym("help-helios"));
 
