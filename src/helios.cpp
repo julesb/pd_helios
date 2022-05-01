@@ -83,28 +83,28 @@ void intensity_set(t_helios *x, t_floatarg f)
 {
   int intensity=min(255,max(0,(int)f));
   x->helios->set_intensity(intensity);
-  redraw(x);
+  //redraw(x);
 }
 
 void maxangle_set(t_helios *x, t_floatarg f)
 {
   float maxangle=min(90,max(0,(int)f));
   x->helios->set_maxangle(maxangle);
-  redraw(x);
+  //redraw(x);
 }
 
 void subdivide_set(t_helios *x, t_floatarg f)
 {
   int subdivide=min(255,max(1,(int)f));
   x->helios->set_subdivide(subdivide);
-  redraw(x);
+  //redraw(x);
 }
 
 void blanknum_set(t_helios *x, t_floatarg f)
 {
   int blanknum=min(255,max(0,(int)f));
   x->helios->set_blanknum(blanknum);
-  redraw(x);
+  //redraw(x);
 }
 
 void rawmode_set(t_helios *x, t_floatarg f)
@@ -120,7 +120,7 @@ void maxstatuspoll_set(t_helios *x, t_floatarg f)
   int maxpoll=max(0,(int)f);
   x->helios->set_maxstatuspoll(maxpoll);
   post("maxstatuspoll: %d", maxpoll);
-  redraw(x);
+  //redraw(x);
 }
 
 void startimmediately_set(t_helios *x, t_floatarg f)
@@ -173,7 +173,7 @@ void scale_set(t_helios *x, t_floatarg f)
     float scale = f;
     x->helios->set_scale(scale);
     //post("scale: %f", scale);
-    redraw(x);
+    //redraw(x);
 }
 
 void helios_free(t_helios *x)
