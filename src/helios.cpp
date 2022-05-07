@@ -63,6 +63,11 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
     if (flip_x) for (auto& p:points) p.x = p.x * -1;
     if (flip_y) for (auto& p:points) p.y = p.y * -1;
 
+    float offset_x = x->helios->get_offset_x();
+    float offset_y = x->helios->get_offset_y();
+    if (offset_x != 0.0) for (auto& p:points) p.x = p.x + offset_x;
+    if (offset_y != 0.0) for (auto& p:points) p.y = p.y + offset_y;
+
     int num_drawn = x->helios->draw(points);
 
     outlet_float(x->f_out, (float)num_drawn);
@@ -168,6 +173,23 @@ void flipy_set(t_helios *x, t_floatarg f)
     redraw(x);
 }
 
+void offsetx_set(t_helios *x, t_floatarg f)
+{
+    if (f > -4096.0 && f < 4096.0) {
+        x->helios->set_offset_x(f);
+        post("offsetx: %f", f);
+    }
+}
+
+void offsety_set(t_helios *x, t_floatarg f)
+{
+    if (f > -4096.0 && f < 4096.0) {
+        x->helios->set_offset_y(f);
+        post("offsety: %f", f);
+    }
+
+}
+
 void scale_set(t_helios *x, t_floatarg f)
 {
     float scale = f;
@@ -267,6 +289,12 @@ void helios_setup(void) {
   class_addmethod(helios_class,
         (t_method)flipy_set, gensym("flipy"), A_DEFFLOAT, 0);
   
+  class_addmethod(helios_class,
+        (t_method)offsetx_set, gensym("offsetx"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)offsety_set, gensym("offsety"), A_DEFFLOAT, 0);
+
   class_addmethod(helios_class,
         (t_method)scale_set, gensym("scale"), A_DEFFLOAT, 0);
   /* set the name of the help-patch to "help-helios"(.pd) */
