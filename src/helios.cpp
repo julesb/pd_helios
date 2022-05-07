@@ -68,8 +68,6 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
     if (offset_x != 0.0) for (auto& p:points) p.x = p.x + offset_x;
     if (offset_y != 0.0) for (auto& p:points) p.y = p.y + offset_y;
 
-    int num_drawn = x->helios->draw(points);
-
     int ttlthresh = x->helios->get_ttlthreshold();
     if (ttlthresh > 0) {
         for (auto& p:points) {
@@ -79,6 +77,7 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
         }
     }
 
+    int num_drawn = x->helios->draw(points);
 
     outlet_float(x->f_out, (float)num_drawn);
 }
@@ -105,6 +104,7 @@ void ttlthreshold_set(t_helios *x, t_floatarg f)
 {
   int ttlthreshold=min(255,max(0,(int)f));
   x->helios->set_ttlthreshold(ttlthreshold);
+  post("ttlthreshold: %d", ttlthreshold);
   //redraw(x);
 }
 
