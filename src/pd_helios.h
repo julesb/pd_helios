@@ -73,7 +73,7 @@ class Helios
 {
 public:
     
-    Helios(int _pps=20000,int _intensity=255, int _ttlthreshold=0, int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _raw_mode=DEFAULT_RAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, int _flipx=0, int _flipy=0, float _scale=1.0, float _offset_x=0.0, float _offset_y=0.0, bool _enabled=false)
+    Helios(int _pps=20000, int _blank_offset=0, int _intensity=255, int _ttlthreshold=0, int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _raw_mode=DEFAULT_RAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, int _flipx=0, int _flipy=0, float _scale=1.0, float _offset_x=0.0, float _offset_y=0.0, bool _enabled=false)
     {
         std::cout << "Helios v "<<HELIOS_VERSION;
 
@@ -95,6 +95,7 @@ public:
             dac.SetShutter(device,false);
         }
         pps=_pps;
+        blank_offset = _blank_offset;
         intensity=_intensity;
         ttlthreshold = _ttlthreshold;
         subdivide=_subdivide;
@@ -129,6 +130,12 @@ public:
     void set_pps(int n){
         if (n!=pps && n >= 10 && n <= 0xffff){
             pps=n;
+            //std::cout << "Helios v "<<HELIOS_VERSION<<": set PPS to "<<pps<<std::endl;
+        }
+    }
+    void set_blank_offset(int n){
+        if (n!=blank_offset){
+            blank_offset=n;
             //std::cout << "Helios v "<<HELIOS_VERSION<<": set PPS to "<<pps<<std::endl;
         }
     }
@@ -236,6 +243,10 @@ public:
         }
     }
 
+    int get_blank_offset() {
+        return blank_offset;
+    }
+
     int get_ttlthreshold() {
         return ttlthreshold;
     }
@@ -278,6 +289,7 @@ public:
         int device;
         HeliosDac dac;
         int pps;
+        int blank_offset;
         int intensity;
         int ttlthreshold;
 

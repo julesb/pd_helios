@@ -93,6 +93,22 @@ static void redraw(t_helios *x){
   outlet_float(x->f_out, (float)num_drawn);
 }
 
+void pps_set(t_helios *x, t_floatarg f)
+{
+  int newpps=min(0xffff, max(10,(int)f));
+  x->helios->set_pps(newpps);
+  post("pps: %d", newpps);
+  //redraw(x);
+}
+
+void blankoffset_set(t_helios *x, t_floatarg f)
+{
+  int bloffs= (int)f;
+  x->helios->set_blank_offset(bloffs);
+  post("blankoffset: %d", bloffs);
+  //redraw(x);
+}
+
 void intensity_set(t_helios *x, t_floatarg f)
 {
   int intensity=min(255,max(0,(int)f));
@@ -165,13 +181,6 @@ void dontblock_set(t_helios *x, t_floatarg f)
     x->helios->set_dontblock(dontblock);
     post("dontblock: %d", dontblock);
     redraw(x);
-}
-void pps_set(t_helios *x, t_floatarg f)
-{
-  int newpps=min(0xffff, max(10,(int)f));
-  x->helios->set_pps(newpps);
-  post("pps: %d", newpps);
-  //redraw(x);
 }
 
 void flipx_set(t_helios *x, t_floatarg f)
@@ -272,6 +281,9 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)pps_set, gensym("pps"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)blankoffset_set, gensym("blankoffset"), A_DEFFLOAT, 0);
 
   class_addmethod(helios_class,
         (t_method)intensity_set, gensym("intensity"), A_DEFFLOAT, 0);

@@ -48,7 +48,8 @@ int Helios::draw_raw(){
     int pollcount;
 
     vector <HeliosPoint> points;
-
+    vector <HeliosPoint> offsetpoints;
+  
     int flags = (start_immediately * HELIOS_FLAGS_START_IMMEDIATELY)
               | (single_mode * HELIOS_FLAGS_SINGLE_MODE)
               | (dont_block * HELIOS_FLAGS_DONT_BLOCK);
@@ -66,6 +67,20 @@ int Helios::draw_raw(){
     for (auto& p:points){ //avoid problems with excessive scale
         p.x=min((uint16_t)0xfff,p.x);
         p.y=min((uint16_t)0xfff,p.y);
+    }
+
+    if (blank_offset != 0) {
+        for (int i=0; i < points.size(); i++) {
+            int offidx = (i + blank_offset) % points.size();
+            offsetpoints.push_back(HeliosPoint {
+               points[i].x,
+               points[i].y,
+               points[offidx].r,
+               points[offidx].g,
+               points[offidx].b
+            });
+         }
+        points = offsetpoints;
     }
 
 	if (device!=HELIOS_NODEVICE){
@@ -95,6 +110,7 @@ int Helios::draw(){
     int pollcount;
     //save data
     vector <HeliosPoint> points;
+    vector <HeliosPoint> offsetpoints;
 
     int flags = (start_immediately * HELIOS_FLAGS_START_IMMEDIATELY)
               | (single_mode * HELIOS_FLAGS_SINGLE_MODE)
@@ -159,6 +175,20 @@ int Helios::draw(){
 	        }
 	        //cout << "segment "<<i<<" - "<<dist<<" length, inserted "<<inserted<<" points"<<endl;
 	    }
+    }
+
+    if (blank_offset != 0) {
+        for (int i=0; i < points.size(); i++) {
+            int offidx = (i + blank_offset) % points.size();
+            offsetpoints.push_back(HeliosPoint {
+               points[i].x,
+               points[i].y,
+               points[offidx].r,
+               points[offidx].g,
+               points[offidx].b
+            });
+         }
+        points = offsetpoints;
     }
 
     for (auto& p:points){ //avoid problems with excessive scale
