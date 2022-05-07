@@ -70,6 +70,16 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
 
     int num_drawn = x->helios->draw(points);
 
+    int ttlthresh = x->helios->get_ttlthreshold();
+    if (ttlthresh > 0) {
+        for (auto& p:points) {
+            p.r = (p.r >= ttlthresh)? 255 : 0;
+            p.g = (p.g >= ttlthresh)? 255 : 0;
+            p.b = (p.b >= ttlthresh)? 255 : 0;
+        }
+    }
+
+
     outlet_float(x->f_out, (float)num_drawn);
 }
 
@@ -88,6 +98,13 @@ void intensity_set(t_helios *x, t_floatarg f)
 {
   int intensity=min(255,max(0,(int)f));
   x->helios->set_intensity(intensity);
+  //redraw(x);
+}
+
+void ttlthreshold_set(t_helios *x, t_floatarg f)
+{
+  int ttlthreshold=min(255,max(0,(int)f));
+  x->helios->set_ttlthreshold(ttlthreshold);
   //redraw(x);
 }
 
@@ -258,6 +275,9 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)intensity_set, gensym("intensity"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)ttlthreshold_set, gensym("ttlthreshold"), A_DEFFLOAT, 0);
 
   class_addmethod(helios_class,
         (t_method)maxangle_set, gensym("maxangle"), A_DEFFLOAT, 0);

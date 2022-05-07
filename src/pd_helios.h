@@ -73,7 +73,7 @@ class Helios
 {
 public:
     
-    Helios(int _pps=20000,int _intensity=255,int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _raw_mode=DEFAULT_RAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, int _flipx=0, int _flipy=0, float _scale=1.0, float _offset_x=0.0, float _offset_y=0.0, bool _enabled=false)
+    Helios(int _pps=20000,int _intensity=255, int _ttlthreshold=0, int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _raw_mode=DEFAULT_RAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, int _flipx=0, int _flipy=0, float _scale=1.0, float _offset_x=0.0, float _offset_y=0.0, bool _enabled=false)
     {
         std::cout << "Helios v "<<HELIOS_VERSION;
 
@@ -96,6 +96,7 @@ public:
         }
         pps=_pps;
         intensity=_intensity;
+        ttlthreshold = _ttlthreshold;
         subdivide=_subdivide;
         blank_num=_blank_num;
         max_angle=_max_angle;
@@ -134,6 +135,12 @@ public:
     void set_intensity(int i){
         if (i>-1&&i<256&&i!=intensity){
             intensity=i;
+            //std::cout << "Helios v "<<HELIOS_VERSION<<": set intensity to "<<intensity<<std::endl;
+        }
+    }
+    void set_ttlthreshold(int i){
+        if (i> -1 && i <256 && i != ttlthreshold) {
+            ttlthreshold=i;
             //std::cout << "Helios v "<<HELIOS_VERSION<<": set intensity to "<<intensity<<std::endl;
         }
     }
@@ -228,6 +235,11 @@ public:
         	
         }
     }
+
+    int get_ttlthreshold() {
+        return ttlthreshold;
+    }
+
     int get_rawmode() {
         return raw_mode;
     }
@@ -267,6 +279,7 @@ public:
         HeliosDac dac;
         int pps;
         int intensity;
+        int ttlthreshold;
 
         bool enabled;
 
