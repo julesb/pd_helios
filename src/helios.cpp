@@ -45,16 +45,25 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
   }
 
     std::vector <point> points;
-    float scale = x->helios->get_scale();
     for (int i=0;i<argc/5;i++){
       points.push_back(point{
-        atom_getfloat(&argv[i*5]) * scale,
-        atom_getfloat(&argv[i*5+1]) * scale,
+        atom_getfloat(&argv[i*5]),
+        atom_getfloat(&argv[i*5+1]),
         (uint8_t)atom_getfloat(&argv[i*5+2]),
         (uint8_t)atom_getfloat(&argv[i*5+3]),
         (uint8_t)atom_getfloat(&argv[i*5+4])
       });
 
+    }
+
+    float scale = x->helios->get_scale();
+    if (scale != 0.0) {
+        if (scale != 0.0) {
+            for (auto& p:points) {
+                p.x = p.x * scale;
+                p.y = p.y * scale;
+            }
+        }
     }
 
     int flip_x = x->helios->get_flip_x();
@@ -76,6 +85,34 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
             p.b = (p.b >= ttlthresh)? 255 : 0;
         }
     }
+
+
+    float ksx = x->helios->get_keystone_x();
+    float ksy = x->helios->get_keystone_y();
+    if (ksx != 0.0 || ksy != 0.0) {
+        for (auto& p:points) {
+            //float origx = p.x;
+            //float origy = p.y;
+
+            float xn = (1.0 + p.x / 2048.0) * 0.5; // map 0..1
+            float yn = (1.0 + p.y / 2048.0) * 0.5; // map 0..1
+
+            if (ksy > 0.0) {
+                p.x = p.x * (1.0 - yn*ksy);
+            }
+            else if (ksy < 0.0) {
+                p.x = p.x * (1.0 - (1.0-yn) * fabs(ksy));
+            }
+            if (ksx > 0.0) {
+                p.y = p.y * (1.0 - xn*ksx);
+            }
+            else if (ksx < 0.0) {
+                p.y = p.y * (1.0 - (1.0-xn) * fabs(ksx));
+            }
+        }
+    }
+
+
 
     int num_drawn = x->helios->draw(points);
 
@@ -224,6 +261,23 @@ void scale_set(t_helios *x, t_floatarg f)
     //redraw(x);
 }
 
+
+void keystonex_set(t_helios *x, t_floatarg f)
+{
+    if (f >= -1.0 && f <= 1.0) {
+        x->helios->set_keystone_x(f);
+        post("keystonex: %f", f);
+    }
+}
+void keystoney_set(t_helios *x, t_floatarg f)
+{
+    if (f >= -1.0 && f <= 1.0) {
+        x->helios->set_keystone_y(f);
+        post("keystoney: %f", f);
+    }
+}
+
+
 void helios_free(t_helios *x)
 {
   delete x->helios;
@@ -329,6 +383,13 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)scale_set, gensym("scale"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)keystonex_set, gensym("keystonex"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)keystoney_set, gensym("keystoney"), A_DEFFLOAT, 0);
+
   /* set the name of the help-patch to "help-helios"(.pd) */
   class_sethelpsymbol(helios_class, gensym("help-helios"));
 

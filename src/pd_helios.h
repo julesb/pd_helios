@@ -73,7 +73,7 @@ class Helios
 {
 public:
     
-    Helios(int _pps=20000, int _blank_offset=0, int _intensity=255, int _ttlthreshold=0, int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _raw_mode=DEFAULT_RAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, int _flipx=0, int _flipy=0, float _scale=1.0, float _offset_x=0.0, float _offset_y=0.0, bool _enabled=false)
+    Helios(int _pps=20000, int _blank_offset=0, int _intensity=255, int _ttlthreshold=0, int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _raw_mode=DEFAULT_RAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, int _flipx=0, int _flipy=0, float _scale=1.0, float _offset_x=0.0, float _offset_y=0.0, float _keystone_x=0.0, float _keystone_y=0.0, bool _enabled=false)
     {
         std::cout << "Helios v "<<HELIOS_VERSION;
 
@@ -111,6 +111,8 @@ public:
         offset_x = _offset_x;
         offset_y = _offset_y;
         scale = _scale;
+        keystone_x = _keystone_x;
+        keystone_y = _keystone_y;
         enabled=_enabled;
         output_centre=point(0x800,0x800); // 2048
     }
@@ -222,7 +224,18 @@ public:
         scale = f;
         //std::cout << "Helios v "<<HELIOS_VERSION<<": set scale to "<<scale<<std::endl;
     }
-    
+
+    void set_keystone_x(float f){
+        if (f >= -1.0 and f <= 1.0) {
+            keystone_x = f;
+        }
+    }
+
+    void set_keystone_y(float f){
+        if (f >= -1.0 and f <= 1.0) {
+            keystone_y = f;
+        }
+    }
 
     void set_maxangle(float f){
         if (f>=0.0f&&f<90.0f&&f!=max_angle){
@@ -274,6 +287,12 @@ public:
     float get_scale() {
         return scale;
     }
+    float get_keystone_x() {
+        return keystone_x;
+    }
+    float get_keystone_y() {
+        return keystone_y;
+    }
 
     //draw a new set of points
     int draw(std::vector <point> &points);
@@ -307,6 +326,8 @@ public:
         float offset_x;
         float offset_y;
         float scale;
+        float keystone_x;
+        float keystone_y;
         int debug;
 
         point output_centre;
