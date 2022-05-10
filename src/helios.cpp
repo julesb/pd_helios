@@ -57,26 +57,31 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
     }
 
     float scale = x->helios->get_scale();
-    if (scale != 0.0) {
-        if (scale != 0.0) {
-            for (auto& p:points) {
-                p.x = p.x * scale;
-                p.y = p.y * scale;
-            }
-        }
+    float scalex = x->helios->get_scale_x();
+    float scaley = x->helios->get_scale_y();
+    for (auto& p:points) {
+        p *= scale;
+        p.x *= scalex;
+        p.y *= scaley;
+        //p.x = p.x * scale;
+        //p.y = p.y * scale;
     }
 
+    // Flip
     int flip_x = x->helios->get_flip_x();
     int flip_y = x->helios->get_flip_y();
 
     if (flip_x) for (auto& p:points) p.x = p.x * -1;
     if (flip_y) for (auto& p:points) p.y = p.y * -1;
 
+
+    // Offset
     float offset_x = x->helios->get_offset_x();
     float offset_y = x->helios->get_offset_y();
     if (offset_x != 0.0) for (auto& p:points) p.x = p.x + offset_x;
     if (offset_y != 0.0) for (auto& p:points) p.y = p.y + offset_y;
 
+    // TTL ON color threshold
     int ttlthresh = x->helios->get_ttlthreshold();
     if (ttlthresh > 0) {
         for (auto& p:points) {
@@ -86,7 +91,7 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
         }
     }
 
-
+    // Keystone
     float ksx = x->helios->get_keystone_x();
     float ksy = x->helios->get_keystone_y();
     if (ksx != 0.0 || ksy != 0.0) {
@@ -261,6 +266,16 @@ void scale_set(t_helios *x, t_floatarg f)
     //redraw(x);
 }
 
+void scalex_set(t_helios *x, t_floatarg f)
+{
+    float sx = f;
+    x->helios->set_scale_x(sx);
+}
+void scaley_set(t_helios *x, t_floatarg f)
+{
+    float sy = f;
+    x->helios->set_scale_y(sy);
+}
 
 void keystonex_set(t_helios *x, t_floatarg f)
 {
@@ -383,6 +398,12 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)scale_set, gensym("scale"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)scalex_set, gensym("scalex"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)scaley_set, gensym("scaley"), A_DEFFLOAT, 0);
 
   class_addmethod(helios_class,
         (t_method)keystonex_set, gensym("keystonex"), A_DEFFLOAT, 0);

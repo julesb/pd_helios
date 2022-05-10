@@ -62,6 +62,11 @@ public:
 	bool operator!=( const point&  p){
 		return x==p.x&&y==p.y;
 	}
+    point& operator*= (const float f) {
+        x *= f;
+        y *= f;
+        return *this;
+    }
 	float distance(const point&  p){
 		return pow((pow(p.x-x,2)+pow(p.y-y,2)),0.5);
 	}
@@ -111,6 +116,8 @@ public:
         offset_x = _offset_x;
         offset_y = _offset_y;
         scale = _scale;
+        scale_x = 1.0;
+        scale_y = 1.0;
         keystone_x = _keystone_x;
         keystone_y = _keystone_y;
         enabled=_enabled;
@@ -222,7 +229,12 @@ public:
 
     void set_scale(float f){
         scale = f;
-        //std::cout << "Helios v "<<HELIOS_VERSION<<": set scale to "<<scale<<std::endl;
+    }
+    void set_scale_x(float f){
+        scale_x = f;
+    }
+    void set_scale_y(float f){
+        scale_y = f;
     }
 
     void set_keystone_x(float f){
@@ -287,6 +299,12 @@ public:
     float get_scale() {
         return scale;
     }
+    float get_scale_x() {
+        return scale_x;
+    }
+    float get_scale_y() {
+        return scale_y;
+    }
     float get_keystone_x() {
         return keystone_x;
     }
@@ -325,7 +343,9 @@ public:
         int flip_y;
         float offset_x;
         float offset_y;
-        float scale;
+        float scale; // master scale
+        float scale_x;
+        float scale_y;
         float keystone_x;
         float keystone_y;
         int debug;
