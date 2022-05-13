@@ -78,7 +78,7 @@ class Helios
 {
 public:
     
-    Helios(int _pps=20000, int _blank_offset=0, int _intensity=255, int _ttlthreshold=0, int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _raw_mode=DEFAULT_RAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, int _flipx=0, int _flipy=0, float _scale=1.0, float _offset_x=0.0, float _offset_y=0.0, float _keystone_x=0.0, float _keystone_y=0.0, bool _enabled=false)
+    Helios(int _pps=20000, int _blank_offset=0, int _intensity=255, int _ttlthreshold=0, int _device = 0,int _subdivide=DEFAULT_SUBDIVIDE,int _blank_num=DEFAULT_BLANK_NUM,int _max_angle=DEFAULT_MAX_ANGLE, int _raw_mode=DEFAULT_RAW_MODE, int _max_status_poll=DEFAULT_MAX_STATUS_POLL, int _start_immediately=0, int _single_mode=0, int _dont_block=0, int _flipx=0, int _flipy=0, float _scale=1.0, float _offset_x=0.0, float _offset_y=0.0, bool _enabled=false)
     {
         std::cout << "Helios v "<<HELIOS_VERSION;
 
@@ -118,8 +118,17 @@ public:
         scale = _scale;
         scale_x = 1.0;
         scale_y = 1.0;
-        keystone_x = _keystone_x;
-        keystone_y = _keystone_y;
+
+        shear_x = 0.0;
+        shear_y = 0.0;
+        keystone_x = 0.0;
+        keystone_y = 0.0;
+        linearity_x = 0.0;
+        linearity_y = 0.0;
+        bow_x = 0.0;
+        bow_y = 0.0;
+        pincushion_x = 0.0;
+        pincushion_y = 0.0;
         enabled=_enabled;
         output_centre=point(0x800,0x800); // 2048
     }
@@ -236,25 +245,44 @@ public:
     void set_scale_y(float f){
         scale_y = f;
     }
-
-    void set_keystone_x(float f){
-        if (f >= -1.0 and f <= 1.0) {
-            keystone_x = f;
-        }
-    }
-
-    void set_keystone_y(float f){
-        if (f >= -1.0 and f <= 1.0) {
-            keystone_y = f;
-        }
-    }
-
     void set_maxangle(float f){
         if (f>=0.0f&&f<90.0f&&f!=max_angle){
             max_angle=f;
             //std::cout << "Helios v "<<HELIOS_VERSION<<": set max_angle to "<<max_angle<<std::endl;
         }
     }
+    
+    void set_shear_x(float f) {
+        shear_x = f;
+    }
+    void set_shear_y(float f) {
+        shear_y = f;
+    }
+    void set_keystone_x(float f){
+        keystone_x = f;
+    }
+    void set_keystone_y(float f){
+        keystone_y = f;
+    }
+    void set_linearity_x(float f) {
+        linearity_x = f;
+    }
+    void set_linearity_y(float f) {
+        linearity_y = f;
+    }
+    void set_bow_x(float f) {
+        bow_x = f;
+    }
+    void set_bow_y(float f) {
+        bow_y = f;
+    }
+    void set_pincushion_x(float f) {
+       pincushion_x = f;
+    }
+    void set_pincushion_y(float f) {
+        pincushion_y = f;
+    }
+
     void set_enabled(bool e){
         if (e!=enabled){
         	enabled=e;
@@ -305,11 +333,36 @@ public:
     float get_scale_y() {
         return scale_y;
     }
+
+    float get_shear_x() {
+        return shear_x;
+    }
+    float get_shear_y() {
+        return shear_y;
+    }
     float get_keystone_x() {
         return keystone_x;
     }
     float get_keystone_y() {
         return keystone_y;
+    }
+    float get_linearity_x() {
+        return linearity_x;
+    }
+    float get_linearity_y() {
+        return linearity_y;
+    }
+    float get_bow_x() {
+        return bow_x;
+    }
+    float get_bow_y() {
+        return bow_y;
+    }
+    float get_pincushion_x() {
+       return pincushion_x;
+    }
+    float get_pincushion_y() {
+        return pincushion_y;
     }
 
     //draw a new set of points
@@ -346,8 +399,19 @@ public:
         float scale; // master scale
         float scale_x;
         float scale_y;
+
+
+        // geometric correction
+        float shear_x;
+        float shear_y;
         float keystone_x;
         float keystone_y;
+        float linearity_x;
+        float linearity_y;
+        float bow_x;
+        float bow_y;
+        float pincushion_x;
+        float pincushion_y;
         int debug;
 
         point output_centre;

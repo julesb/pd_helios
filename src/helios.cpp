@@ -81,6 +81,45 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
     if (offset_x != 0.0) for (auto& p:points) p.x = p.x + offset_x;
     if (offset_y != 0.0) for (auto& p:points) p.y = p.y + offset_y;
 
+    // thanks to mpolak @ photonlexicon for the clarity:
+    // https://photonlexicon.com/forums/showthread.php/26099-geometric-correction-algorithm/page4
+    float shear_x = x->helios->get_shear_x();
+    float shear_y = x->helios->get_shear_y();
+    float keystone_x = x->helios->get_keystone_x();
+    float keystone_y = x->helios->get_keystone_y();
+    float linearity_x = x->helios->get_linearity_x();
+    float linearity_y = x->helios->get_linearity_y();
+    float bow_x = x->helios->get_bow_x();
+    float bow_y = x->helios->get_bow_y();
+    float pincushion_x = x->helios->get_pincushion_x();
+    float pincushion_y = x->helios->get_pincushion_y();
+
+    for (auto& p:points) {
+
+        float xn =  p.x / 2048.0; // map -1..1
+        float yn =  p.y / 2048.0; // map -1..1
+        float xt = xn;
+        float yt = yn;
+
+        xt += shear_x * yn;
+        yt += shear_y * xn;
+
+        xt += keystone_x * xn * yn;
+        yt += keystone_y * xn * yn;
+
+        xt += linearity_x * xn * xn;
+        yt += linearity_y * yn * yn;
+
+        xt += bow_x * yn * yn;
+        yt += bow_y * xn * xn;
+
+        xt += pincushion_x * xn * yn * yn;
+        yt += pincushion_y * yn * xn * xn;
+
+        p.x = xt * 2048.0;
+        p.y = yt * 2048.0;
+    }
+
     // TTL ON color threshold
     int ttlthresh = x->helios->get_ttlthreshold();
     if (ttlthresh > 0) {
@@ -90,33 +129,6 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
             p.b = (p.b >= ttlthresh)? 255 : 0;
         }
     }
-
-    // Keystone
-    float ksx = x->helios->get_keystone_x();
-    float ksy = x->helios->get_keystone_y();
-    if (ksx != 0.0 || ksy != 0.0) {
-        for (auto& p:points) {
-            //float origx = p.x;
-            //float origy = p.y;
-
-            float xn = (1.0 + p.x / 2048.0) * 0.5; // map 0..1
-            float yn = (1.0 + p.y / 2048.0) * 0.5; // map 0..1
-
-            if (ksy > 0.0) {
-                p.x = p.x * (1.0 - yn*ksy);
-            }
-            else if (ksy < 0.0) {
-                p.x = p.x * (1.0 - (1.0-yn) * fabs(ksy));
-            }
-            if (ksx > 0.0) {
-                p.y = p.y * (1.0 - xn*ksx);
-            }
-            else if (ksx < 0.0) {
-                p.y = p.y * (1.0 - (1.0-xn) * fabs(ksx));
-            }
-        }
-    }
-
 
 
     int num_drawn = x->helios->draw(points);
@@ -277,21 +289,57 @@ void scaley_set(t_helios *x, t_floatarg f)
     x->helios->set_scale_y(sy);
 }
 
+
+void shearx_set(t_helios *x, t_floatarg f)
+{
+    x->helios->set_shear_x(f);
+    post("shearx: %f", f);
+}
+void sheary_set(t_helios *x, t_floatarg f)
+{
+    x->helios->set_shear_y(f);
+    post("sheary: %f", f);
+}
 void keystonex_set(t_helios *x, t_floatarg f)
 {
-    if (f >= -1.0 && f <= 1.0) {
-        x->helios->set_keystone_x(f);
-        post("keystonex: %f", f);
-    }
+    x->helios->set_keystone_x(f);
+    post("keystonex: %f", f);
 }
 void keystoney_set(t_helios *x, t_floatarg f)
 {
-    if (f >= -1.0 && f <= 1.0) {
-        x->helios->set_keystone_y(f);
-        post("keystoney: %f", f);
-    }
+    x->helios->set_keystone_y(f);
+    post("keystoney: %f", f);
 }
-
+void linearityx_set(t_helios *x, t_floatarg f)
+{
+    x->helios->set_linearity_x(f);
+    post("linearityx: %f", f);
+}
+void linearityy_set(t_helios *x, t_floatarg f)
+{
+    x->helios->set_linearity_y(f);
+    post("linearityy: %f", f);
+}
+void bowx_set(t_helios *x, t_floatarg f)
+{
+    x->helios->set_bow_x(f);
+    post("bowx: %f", f);
+}
+void bowy_set(t_helios *x, t_floatarg f)
+{
+    x->helios->set_bow_y(f);
+    post("bowy: %f", f);
+}
+void pincushionx_set(t_helios *x, t_floatarg f)
+{
+    x->helios->set_pincushion_x(f);
+    post("pincushionx: %f", f);
+}
+void pincushiony_set(t_helios *x, t_floatarg f)
+{
+    x->helios->set_pincushion_y(f);
+    post("pincushiony: %f", f);
+}
 
 void helios_free(t_helios *x)
 {
@@ -405,11 +453,36 @@ void helios_setup(void) {
   class_addmethod(helios_class,
         (t_method)scaley_set, gensym("scaley"), A_DEFFLOAT, 0);
 
+
+  class_addmethod(helios_class,
+        (t_method)shearx_set, gensym("shearx"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)sheary_set, gensym("sheary"), A_DEFFLOAT, 0);
+
   class_addmethod(helios_class,
         (t_method)keystonex_set, gensym("keystonex"), A_DEFFLOAT, 0);
 
   class_addmethod(helios_class,
         (t_method)keystoney_set, gensym("keystoney"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)linearityx_set, gensym("linearityx"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)linearityy_set, gensym("linearityy"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)bowx_set, gensym("bowx"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)bowy_set, gensym("bowy"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)pincushionx_set, gensym("pincushionx"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)pincushiony_set, gensym("pincushiony"), A_DEFFLOAT, 0);
 
   /* set the name of the help-patch to "help-helios"(.pd) */
   class_sethelpsymbol(helios_class, gensym("help-helios"));
