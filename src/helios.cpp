@@ -53,33 +53,15 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
         (uint8_t)atom_getfloat(&argv[i*5+3]),
         (uint8_t)atom_getfloat(&argv[i*5+4])
       });
-
     }
 
+    int flip_x = x->helios->get_flip_x() ? -1.0 : 1.0;
+    int flip_y = x->helios->get_flip_y() ? -1.0 : 1.0;
     float scale = x->helios->get_scale();
-    float scalex = x->helios->get_scale_x();
-    float scaley = x->helios->get_scale_y();
-    for (auto& p:points) {
-        p *= scale;
-        p.x *= scalex;
-        p.y *= scaley;
-        //p.x = p.x * scale;
-        //p.y = p.y * scale;
-    }
-
-    // Flip
-    int flip_x = x->helios->get_flip_x();
-    int flip_y = x->helios->get_flip_y();
-
-    if (flip_x) for (auto& p:points) p.x = p.x * -1;
-    if (flip_y) for (auto& p:points) p.y = p.y * -1;
-
-
-    // Offset
+    float scale_x = x->helios->get_scale_x();
+    float scale_y = x->helios->get_scale_y();
     float offset_x = x->helios->get_offset_x();
     float offset_y = x->helios->get_offset_y();
-    if (offset_x != 0.0) for (auto& p:points) p.x = p.x + offset_x;
-    if (offset_y != 0.0) for (auto& p:points) p.y = p.y + offset_y;
 
     // thanks to mpolak @ photonlexicon for the clarity:
     // https://photonlexicon.com/forums/showthread.php/26099-geometric-correction-algorithm/page4
@@ -94,7 +76,11 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
     float pincushion_x = x->helios->get_pincushion_x();
     float pincushion_y = x->helios->get_pincushion_y();
 
+    int ttlthresh = x->helios->get_ttlthreshold();
+
     for (auto& p:points) {
+        p.x = p.x * flip_x * scale * scale_x + offset_x;
+        p.y = p.y * flip_y * scale * scale_y + offset_y;
 
         float xn =  p.x / 2048.0; // map -1..1
         float yn =  p.y / 2048.0; // map -1..1
@@ -118,18 +104,11 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
 
         p.x = xt * 2048.0;
         p.y = yt * 2048.0;
-    }
 
-    // TTL ON color threshold
-    int ttlthresh = x->helios->get_ttlthreshold();
-    if (ttlthresh > 0) {
-        for (auto& p:points) {
-            p.r = (p.r >= ttlthresh)? 255 : 0;
-            p.g = (p.g >= ttlthresh)? 255 : 0;
-            p.b = (p.b >= ttlthresh)? 255 : 0;
-        }
+        p.r = (p.r >= ttlthresh)? 255 : 0;
+        p.g = (p.g >= ttlthresh)? 255 : 0;
+        p.b = (p.b >= ttlthresh)? 255 : 0;
     }
-
 
     int num_drawn = x->helios->draw(points);
 
@@ -452,7 +431,6 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)scaley_set, gensym("scaley"), A_DEFFLOAT, 0);
-
 
   class_addmethod(helios_class,
         (t_method)shearx_set, gensym("shearx"), A_DEFFLOAT, 0);
