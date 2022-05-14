@@ -58,6 +58,7 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
     int flip_x = x->helios->get_flip_x() ? -1.0 : 1.0;
     int flip_y = x->helios->get_flip_y() ? -1.0 : 1.0;
     float scale = x->helios->get_scale();
+    float rotation = x->helios->get_rotation() / 180.0 * 3.14159265;
     float scale_x = x->helios->get_scale_x();
     float scale_y = x->helios->get_scale_y();
     float offset_x = x->helios->get_offset_x();
@@ -79,9 +80,21 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
     int ttlthresh = x->helios->get_ttlthreshold();
 
     for (auto& p:points) {
-        p.x = p.x * flip_x * scale * scale_x + offset_x;
-        p.y = p.y * flip_y * scale * scale_y + offset_y;
+        // basic transform
+        p.x = p.x * flip_x * scale * scale_x;
+        p.y = p.y * flip_y * scale * scale_y;
 
+        if (rotation != 0.0) {
+            float xr = p.x * cos(rotation) - p.y * sin(rotation);
+            float yr = p.y * cos(rotation) + p.x * sin(rotation);
+            p.x = xr;
+            p.y = yr;
+        }
+
+        p.x += offset_x;
+        p.y += offset_y;
+
+        // getmetric correction
         float xn =  p.x / 2048.0; // map -1..1
         float yn =  p.y / 2048.0; // map -1..1
         float xt = xn;
@@ -105,6 +118,7 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
         p.x = xt * 2048.0;
         p.y = yt * 2048.0;
 
+        // TTL color threshold
         p.r = (p.r >= ttlthresh)? 255 : 0;
         p.g = (p.g >= ttlthresh)? 255 : 0;
         p.b = (p.b >= ttlthresh)? 255 : 0;
@@ -253,8 +267,14 @@ void scale_set(t_helios *x, t_floatarg f)
 {
     float scale = f;
     x->helios->set_scale(scale);
-    //post("scale: %f", scale);
-    //redraw(x);
+    post("scale: %f", scale);
+}
+
+void rotation_set(t_helios *x, t_floatarg f)
+{
+    float rot = f;
+    x->helios->set_rotation(rot);
+    post("rotation: %f", rot);
 }
 
 void scalex_set(t_helios *x, t_floatarg f)
@@ -425,6 +445,9 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)scale_set, gensym("scale"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)rotation_set, gensym("rotation"), A_DEFFLOAT, 0);
 
   class_addmethod(helios_class,
         (t_method)scalex_set, gensym("scalex"), A_DEFFLOAT, 0);

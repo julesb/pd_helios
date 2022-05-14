@@ -116,9 +116,9 @@ public:
         offset_x = _offset_x;
         offset_y = _offset_y;
         scale = _scale;
+        rotation = 0.0;
         scale_x = 1.0;
         scale_y = 1.0;
-
         shear_x = 0.0;
         shear_y = 0.0;
         keystone_x = 0.0;
@@ -181,6 +181,11 @@ public:
             //std::cout << "Helios v "<<HELIOS_VERSION<<": set blank_num to "<<blank_num<<std::endl;
         }
     }
+    void set_maxangle(float f){
+        if (f>=0.0f&&f<90.0f&&f!=max_angle){
+            max_angle=f;
+        }
+    }
     void set_rawmode(int i){
         if (i == 0 || i == 1) {
             raw_mode = i;
@@ -239,19 +244,15 @@ public:
     void set_scale(float f){
         scale = f;
     }
+    void set_rotation(float f) {
+        rotation = f;
+    }
     void set_scale_x(float f){
         scale_x = f;
     }
     void set_scale_y(float f){
         scale_y = f;
     }
-    void set_maxangle(float f){
-        if (f>=0.0f&&f<90.0f&&f!=max_angle){
-            max_angle=f;
-            //std::cout << "Helios v "<<HELIOS_VERSION<<": set max_angle to "<<max_angle<<std::endl;
-        }
-    }
-    
     void set_shear_x(float f) {
         shear_x = f;
     }
@@ -327,13 +328,15 @@ public:
     float get_scale() {
         return scale;
     }
+    float get_rotation() {
+        return rotation;
+    }
     float get_scale_x() {
         return scale_x;
     }
     float get_scale_y() {
         return scale_y;
     }
-
     float get_shear_x() {
         return shear_x;
     }
@@ -385,23 +388,28 @@ public:
 
         bool enabled;
 
+        // optimization
         int subdivide,blank_num;
         float max_angle;
         int raw_mode;
+
+        // DAC controls
         int max_status_poll;
         int start_immediately;
         int single_mode;
         int dont_block;
+
+        // basic transform
         int flip_x;
         int flip_y;
         float offset_x;
         float offset_y;
-        float scale; // master scale
-        float scale_x;
-        float scale_y;
-
+        float scale;
+        float rotation;
 
         // geometric correction
+        float scale_x;
+        float scale_y;
         float shear_x;
         float shear_y;
         float keystone_x;
