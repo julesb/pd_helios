@@ -144,7 +144,7 @@ void pps_set(t_helios *x, t_floatarg f)
 {
   int newpps=min(0xffff, max(10,(int)f));
   x->helios->set_pps(newpps);
-  post("pps: %d", newpps);
+  //post("pps: %d", newpps);
   //redraw(x);
 }
 
@@ -152,7 +152,7 @@ void blankoffset_set(t_helios *x, t_floatarg f)
 {
   int bloffs= (int)f;
   x->helios->set_blank_offset(bloffs);
-  post("blankoffset: %d", bloffs);
+  //post("blankoffset: %d", bloffs);
   //redraw(x);
 }
 
@@ -167,7 +167,7 @@ void ttlthreshold_set(t_helios *x, t_floatarg f)
 {
   int ttlthreshold=min(255,max(0,(int)f));
   x->helios->set_ttlthreshold(ttlthreshold);
-  post("ttlthreshold: %d", ttlthreshold);
+  //post("ttlthreshold: %d", ttlthreshold);
   //redraw(x);
 }
 
@@ -196,7 +196,7 @@ void rawmode_set(t_helios *x, t_floatarg f)
 {
   int rawmode=min(1,max(0,(int)f));
   x->helios->set_rawmode(rawmode);
-  post("rawmode: %d", rawmode);
+  //post("rawmode: %d", rawmode);
   redraw(x);
 }
 
@@ -204,7 +204,7 @@ void maxstatuspoll_set(t_helios *x, t_floatarg f)
 {
   int maxpoll=max(0,(int)f);
   x->helios->set_maxstatuspoll(maxpoll);
-  post("maxstatuspoll: %d", maxpoll);
+  //post("maxstatuspoll: %d", maxpoll);
   //redraw(x);
 }
 
@@ -212,21 +212,21 @@ void startimmediately_set(t_helios *x, t_floatarg f)
 {
     int startimmediately = min(1, max(0, (int)f));
     x->helios->set_startimmediately(startimmediately);
-    post("startimmediately: %d", startimmediately);
+    //post("startimmediately: %d", startimmediately);
     redraw(x);
 }
 void singlemode_set(t_helios *x, t_floatarg f)
 {
     int singlemode = min(1, max(0, (int)f));
     x->helios->set_singlemode(singlemode);
-    post("singlemode: %d", singlemode);
+    //post("singlemode: %d", singlemode);
     redraw(x);
 }
 void dontblock_set(t_helios *x, t_floatarg f)
 {
     int dontblock = min(1, max(0, (int)f));
     x->helios->set_dontblock(dontblock);
-    post("dontblock: %d", dontblock);
+    //post("dontblock: %d", dontblock);
     redraw(x);
 }
 
@@ -234,7 +234,7 @@ void flipx_set(t_helios *x, t_floatarg f)
 {
     int flipx = min(1, max(0, (int)f));
     x->helios->set_flip_x(flipx);
-    post("flipx: %d", flipx);
+    //post("flipx: %d", flipx);
     redraw(x);
 }
 
@@ -242,7 +242,7 @@ void flipy_set(t_helios *x, t_floatarg f)
 {
     int flipy = min(1, max(0, (int)f));
     x->helios->set_flip_y(flipy);
-    post("flipy: %d", flipy);
+    //post("flipy: %d", flipy);
     redraw(x);
 }
 
@@ -250,7 +250,7 @@ void offsetx_set(t_helios *x, t_floatarg f)
 {
     if (f > -4096.0 && f < 4096.0) {
         x->helios->set_offset_x(f);
-        post("offsetx: %f", f);
+        //post("offsetx: %f", f);
     }
 }
 
@@ -258,7 +258,7 @@ void offsety_set(t_helios *x, t_floatarg f)
 {
     if (f > -4096.0 && f < 4096.0) {
         x->helios->set_offset_y(f);
-        post("offsety: %f", f);
+        //post("offsety: %f", f);
     }
 
 }
@@ -267,14 +267,14 @@ void scale_set(t_helios *x, t_floatarg f)
 {
     float scale = f;
     x->helios->set_scale(scale);
-    post("scale: %f", scale);
+    //post("scale: %f", scale);
 }
 
 void rotation_set(t_helios *x, t_floatarg f)
 {
     float rot = f;
     x->helios->set_rotation(rot);
-    post("rotation: %f", rot);
+    //post("rotation: %f", rot);
 }
 
 void scalex_set(t_helios *x, t_floatarg f)
@@ -292,52 +292,52 @@ void scaley_set(t_helios *x, t_floatarg f)
 void shearx_set(t_helios *x, t_floatarg f)
 {
     x->helios->set_shear_x(f);
-    post("shearx: %f", f);
+    //post("shearx: %f", f);
 }
 void sheary_set(t_helios *x, t_floatarg f)
 {
     x->helios->set_shear_y(f);
-    post("sheary: %f", f);
+    //post("sheary: %f", f);
 }
 void keystonex_set(t_helios *x, t_floatarg f)
 {
     x->helios->set_keystone_x(f);
-    post("keystonex: %f", f);
+    //post("keystonex: %f", f);
 }
 void keystoney_set(t_helios *x, t_floatarg f)
 {
     x->helios->set_keystone_y(f);
-    post("keystoney: %f", f);
+    //post("keystoney: %f", f);
 }
 void linearityx_set(t_helios *x, t_floatarg f)
 {
     x->helios->set_linearity_x(f);
-    post("linearityx: %f", f);
+    //post("linearityx: %f", f);
 }
 void linearityy_set(t_helios *x, t_floatarg f)
 {
     x->helios->set_linearity_y(f);
-    post("linearityy: %f", f);
+    //post("linearityy: %f", f);
 }
 void bowx_set(t_helios *x, t_floatarg f)
 {
     x->helios->set_bow_x(f);
-    post("bowx: %f", f);
+    //post("bowx: %f", f);
 }
 void bowy_set(t_helios *x, t_floatarg f)
 {
     x->helios->set_bow_y(f);
-    post("bowy: %f", f);
+    //post("bowy: %f", f);
 }
 void pincushionx_set(t_helios *x, t_floatarg f)
 {
     x->helios->set_pincushion_x(f);
-    post("pincushionx: %f", f);
+    //post("pincushionx: %f", f);
 }
 void pincushiony_set(t_helios *x, t_floatarg f)
 {
     x->helios->set_pincushion_y(f);
-    post("pincushiony: %f", f);
+    //post("pincushiony: %f", f);
 }
 
 void helios_free(t_helios *x)
