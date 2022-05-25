@@ -129,6 +129,7 @@ public:
         bow_y = 0.0;
         pincushion_x = 0.0;
         pincushion_y = 0.0;
+        framedump_requested = 0;
         enabled=_enabled;
         output_centre=point(0x800,0x800); // 2048
     }
@@ -283,6 +284,9 @@ public:
     void set_pincushion_y(float f) {
         pincushion_y = f;
     }
+    void request_framedump() {
+        framedump_requested = 1;
+    }
 
     void set_enabled(bool e){
         if (e!=enabled){
@@ -377,6 +381,8 @@ public:
     //repeat previous drawing (intensity is re-calculated)
     int draw();
 
+    void dump_frame(std::vector <HeliosPoint> points);
+
     private:
 
         int device;
@@ -420,6 +426,7 @@ public:
         float bow_y;
         float pincushion_x;
         float pincushion_y;
+        int framedump_requested;
         int debug;
 
         point output_centre;

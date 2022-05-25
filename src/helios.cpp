@@ -339,6 +339,10 @@ void pincushiony_set(t_helios *x, t_floatarg f)
     x->helios->set_pincushion_y(f);
     //post("pincushiony: %f", f);
 }
+void dumpframe_set(t_helios *x, t_floatarg f)
+{
+    x->helios->request_framedump();
+}
 
 void helios_free(t_helios *x)
 {
@@ -484,6 +488,9 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)pincushiony_set, gensym("pincushiony"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)dumpframe_set, gensym("dumpframe"), A_DEFFLOAT, 0);
 
   /* set the name of the help-patch to "help-helios"(.pd) */
   class_sethelpsymbol(helios_class, gensym("help-helios"));

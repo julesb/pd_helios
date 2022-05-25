@@ -92,6 +92,10 @@ int Helios::draw_raw(){
                 }
             }
 	        int ret=dac.WriteFrame(device, pps, flags, &points[0], min(HELIOS_MAX_POINTS,(int)points.size()));
+
+            if (framedump_requested) {
+                dump_frame(points);
+            }
 	        if (ret==HELIOS_SUCCESS){
                 return points.size();
 	        }
@@ -204,6 +208,9 @@ int Helios::draw(){
                     break;
                 }
             }
+            if (framedump_requested) {
+                dump_frame(points);
+            }
             if (points.size() > 4096) {
                 cout << "Too many points: " << points.size() << endl;
                 return HELIOS_ERROR_TOO_MANY_POINTS;
@@ -217,4 +224,18 @@ int Helios::draw(){
 	}
 
 	return -2;
+}
+
+
+void Helios::dump_frame(std::vector <HeliosPoint> points) {
+    std::cout << "frame: ";
+    for (auto& p:points) {
+        std::cout << (int)p.x-output_centre.x << " "
+                  << (int)p.y-output_centre.y << " "
+                  << (int)p.r << " "
+                  << (int)p.g << " "
+                  << (int)p.b << " ";
+    }
+    std::cout << std::endl;
+    framedump_requested = 0;
 }
