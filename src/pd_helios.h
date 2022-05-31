@@ -130,6 +130,9 @@ public:
         pincushion_x = 0.0;
         pincushion_y = 0.0;
         framedump_requested = 0;
+        colormapr = 1;
+        colormapg = 2;
+        colormapb = 4;
         enabled=_enabled;
         output_centre=point(0x800,0x800); // 2048
     }
@@ -284,6 +287,22 @@ public:
     void set_pincushion_y(float f) {
         pincushion_y = f;
     }
+    void set_colormapr(int i) {
+        if (i >= 0 && i < 8) {
+            colormapr = (std::uint8_t)i;
+        }
+    }
+    void set_colormapg(int i) {
+        if (i >= 0 && i < 8) {
+            colormapg = (std::uint8_t)i;
+        }
+    }
+    void set_colormapb(int i) {
+        if (i >= 0 && i < 8) {
+            colormapb = (std::uint8_t)i;
+        }
+    }
+
     void request_framedump() {
         framedump_requested = 1;
     }
@@ -371,6 +390,16 @@ public:
     float get_pincushion_y() {
         return pincushion_y;
     }
+    std::uint8_t get_colormapr() {
+        return colormapr;
+    }
+    std::uint8_t get_colormapg() {
+        return colormapg;
+    }
+    std::uint8_t get_colormapb() {
+        return colormapb;
+    }
+
 
     //draw a new set of points
     int draw(std::vector <point> &points);
@@ -427,6 +456,9 @@ public:
         float pincushion_x;
         float pincushion_y;
         int framedump_requested;
+        std::uint8_t colormapr;
+        std::uint8_t colormapg;
+        std::uint8_t colormapb;
         int debug;
 
         point output_centre;

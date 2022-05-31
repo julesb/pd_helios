@@ -230,11 +230,10 @@ int Helios::draw(){
 void Helios::dump_frame(std::vector <HeliosPoint> points) {
     std::cout << "frame: ";
     for (auto& p:points) {
-        std::cout << (int)p.x-output_centre.x << " "
-                  << (int)p.y-output_centre.y << " "
-                  << (int)p.r << " "
-                  << (int)p.g << " "
-                  << (int)p.b << " ";
+        std::cout << "\t["
+                  << (int)p.x-output_centre.x << ", "
+                  << (int)p.y-output_centre.y << "] "
+                  << "[" << (int)p.r << ", " << (int)p.g << ", " << (int)p.b << "]\n";
     }
     std::cout << std::endl;
     framedump_requested = 0;

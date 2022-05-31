@@ -78,8 +78,46 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
     float bow_y = x->helios->get_bow_y();
     float pincushion_x = x->helios->get_pincushion_x();
     float pincushion_y = x->helios->get_pincushion_y();
+    int colormapr = x->helios->get_colormapr();
+    int colormapg = x->helios->get_colormapg();
+    int colormapb = x->helios->get_colormapb();
 
     int ttlthresh = x->helios->get_ttlthreshold();
+
+    if (colormapr != 1 || colormapg != 2|| colormapb != 4) {
+        int rr = (colormapr & 1);
+        int rg = (colormapg & 1);
+        int rb = (colormapb & 1);
+        int gr = ((colormapr & 2) >> 1);
+        int gg = ((colormapg & 2) >> 1);
+        int gb = ((colormapb & 2) >> 1);
+        int br = ((colormapr & 4) >> 2);
+        int bg = ((colormapg & 4) >> 2);
+        int bb = ((colormapb & 4) >> 2);
+
+        for (auto& p:points) {
+            std::uint32_t rnew=0, gnew=0 , bnew=0;
+             p.r = (std::uint8_t)(rr * p.r + rg * p.g + rb * p.b);
+             p.g = (std::uint8_t)(gr * p.r + gg * p.g + gb * p.b);
+             p.b = (std::uint8_t)(br * p.r + bg * p.g + bb * p.b);
+
+            /*
+            rnew = (colormapr & 1) * p.r
+                 + (colormapg & 1) * p.g
+                 + (colormapb & 1) * p.b;
+            gnew = ((colormapr & 2) >> 1) * p.r
+                 + ((colormapg & 2) >> 1) * p.g
+                 + ((colormapb & 2) >> 1) * p.b;
+            bnew = ((colormapr & 4) >> 2) * p.r
+                 + ((colormapg & 4) >> 2) * p.g
+                 + ((colormapb & 4) >> 2) * p.b;
+
+            p.r = (std::uint8_t)rnew;
+            p.g = (std::uint8_t)gnew;
+            p.b = (std::uint8_t)bnew;
+            */
+        }
+    }
 
     for (auto& p:points) {
         // basic transform
@@ -339,6 +377,20 @@ void pincushiony_set(t_helios *x, t_floatarg f)
     x->helios->set_pincushion_y(f);
     //post("pincushiony: %f", f);
 }
+void colormapr_set(t_helios *x, t_floatarg f)
+{
+    x->helios->set_colormapr((int)f);
+}
+void colormapg_set(t_helios *x, t_floatarg f)
+{
+    x->helios->set_colormapg((int)f);
+}
+void colormapb_set(t_helios *x, t_floatarg f)
+{
+    x->helios->set_colormapb((int)f);
+}
+
+
 void dumpframe_set(t_helios *x, t_floatarg f)
 {
     x->helios->request_framedump();
@@ -488,6 +540,13 @@ void helios_setup(void) {
 
   class_addmethod(helios_class,
         (t_method)pincushiony_set, gensym("pincushiony"), A_DEFFLOAT, 0);
+
+  class_addmethod(helios_class,
+        (t_method)colormapr_set, gensym("colormapr"), A_DEFFLOAT, 0);
+  class_addmethod(helios_class,
+        (t_method)colormapg_set, gensym("colormapg"), A_DEFFLOAT, 0);
+  class_addmethod(helios_class,
+        (t_method)colormapb_set, gensym("colormapb"), A_DEFFLOAT, 0);
 
   class_addmethod(helios_class,
         (t_method)dumpframe_set, gensym("dumpframe"), A_DEFFLOAT, 0);
