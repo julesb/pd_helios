@@ -100,22 +100,6 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
              p.r = (std::uint8_t)(rr * p.r + rg * p.g + rb * p.b);
              p.g = (std::uint8_t)(gr * p.r + gg * p.g + gb * p.b);
              p.b = (std::uint8_t)(br * p.r + bg * p.g + bb * p.b);
-
-            /*
-            rnew = (colormapr & 1) * p.r
-                 + (colormapg & 1) * p.g
-                 + (colormapb & 1) * p.b;
-            gnew = ((colormapr & 2) >> 1) * p.r
-                 + ((colormapg & 2) >> 1) * p.g
-                 + ((colormapb & 2) >> 1) * p.b;
-            bnew = ((colormapr & 4) >> 2) * p.r
-                 + ((colormapg & 4) >> 2) * p.g
-                 + ((colormapb & 4) >> 2) * p.b;
-
-            p.r = (std::uint8_t)rnew;
-            p.g = (std::uint8_t)gnew;
-            p.b = (std::uint8_t)bnew;
-            */
         }
     }
 
@@ -132,7 +116,7 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
         p.x += offset_x;
         p.y += offset_y;
 
-        // getmetric correction
+        // geometric correction
         float xn =  p.x / 2048.0; // map -1..1
         float yn =  p.y / 2048.0; // map -1..1
         float xt = xn;
