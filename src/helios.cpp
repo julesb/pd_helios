@@ -141,9 +141,11 @@ static void helios_list(t_helios *x, t_symbol *s, int argc, t_atom *argv)
         p.y = yt * 2048.0;
 
         // TTL color threshold
-        p.r = (p.r >= ttlthresh)? 255 : 0;
-        p.g = (p.g >= ttlthresh)? 255 : 0;
-        p.b = (p.b >= ttlthresh)? 255 : 0;
+        if (ttlthresh > 0) {
+            p.r = (p.r >= ttlthresh)? 255 : 0;
+            p.g = (p.g >= ttlthresh)? 255 : 0;
+            p.b = (p.b >= ttlthresh)? 255 : 0;
+        }
     }
 
     int num_drawn = x->helios->draw(points);
