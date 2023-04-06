@@ -4,6 +4,24 @@ Pure data external for the Helios Laser DAC
 * https://github.com/Grix/helios_dac
 * https://github.com/pure-data/pure-data
 
+
+========================
+
+**NOTE: This project is a fork of [pd_helios](https://github.com/timredfern/pd_helios), that provides some extra functionality over the original:**
+- Access to more DAC features: start immediately, don't block, single mode etc.
+- Frame dump - sets a trigger which causes the next frame sent to the DAC to be dumped to the Pd console.
+- Adjustable polling limit so that infinite loops are not possible.
+- Transforms - scale, rotate, translate, flip.
+- Color - TTL threshold, color timing offset, channel mapping.
+- Raw mode - disables the builtin points optimization - for when you want to manage subdivision, dwell points etc yourself.
+- Geometric correction - scale X Y, shear, keystone, linearity, bow, pincushion
+
+You can use [helios-control](https://github.com/julesb/helios-control) to adjust all of the above from within Pd.
+
+
+========================
+
+
 ![help-helios.pd](help.png)
 
 ## Version
