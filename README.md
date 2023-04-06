@@ -11,6 +11,7 @@ Pure data external for the Helios Laser DAC
 - Access to more DAC features: start immediately, don't block, single mode etc.
 - Frame dump - sets a trigger which causes the next frame sent to the DAC to be dumped to the Pd console.
 - Adjustable polling limit so that infinite loops are not possible.
+- Dynamically change PPS without having to reset the pd_helios object.
 - Transforms - scale, rotate, translate, flip.
 - Color - TTL threshold, color timing offset, channel mapping.
 - Raw mode - disables the builtin points optimization - for when you want to manage subdivision, dwell points etc yourself.
